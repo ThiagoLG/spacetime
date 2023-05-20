@@ -1,18 +1,7 @@
-import { StatusBar } from 'expo-status-bar'
-import { ImageBackground, View, Text, TouchableOpacity } from 'react-native'
-import {
-  useFonts,
-  Roboto_400Regular,
-  Roboto_700Bold,
-} from '@expo-google-fonts/roboto'
-import { BaiJamjuree_700Bold } from '@expo-google-fonts/bai-jamjuree'
-import { styled } from 'nativewind'
+import { View, Text, TouchableOpacity } from 'react-native'
 import { useEffect } from 'react'
 import { useRouter } from 'expo-router'
-
 import { api } from '../src/lib/api'
-import blurBr from '../src/assets/bg-blur.png'
-import Stripes from '../src/assets/stripes.svg'
 import NLWLogo from '../src/assets/nlw-spacetime-logo.svg'
 import {
   DiscoveryDocument,
@@ -20,8 +9,6 @@ import {
   useAuthRequest,
 } from 'expo-auth-session'
 import * as SecureStore from 'expo-secure-store'
-
-const StyledStripes = styled(Stripes)
 
 const discovery: DiscoveryDocument = {
   authorizationEndpoint: 'https://github.com/login/oauth/authorize',
@@ -32,12 +19,6 @@ const discovery: DiscoveryDocument = {
 
 export default function App() {
   const router = useRouter()
-
-  const [hasLoadedFonts] = useFonts({
-    Roboto_400Regular,
-    Roboto_700Bold,
-    BaiJamjuree_700Bold,
-  })
 
   const [, response, promptAsync] = useAuthRequest(
     {
@@ -82,19 +63,8 @@ export default function App() {
     }
   }, [response])
 
-  if (!hasLoadedFonts) return null
-
   return (
-    <ImageBackground
-      source={blurBr}
-      className="relative flex-1 items-center bg-gray-900 p-8"
-      imageStyle={{
-        position: 'absolute',
-        left: '-120%',
-      }}
-    >
-      <StyledStripes className="absolute left-2" />
-
+    <View className="relative flex-1 items-center p-8">
       <View className="flex-1 items-center justify-center gap-6">
         <NLWLogo />
 
@@ -122,8 +92,6 @@ export default function App() {
       <Text className="text-center font-body text-sm leading-relaxed text-gray-300">
         Maked with 💜 on Rocketseat{"'"}s NLW
       </Text>
-
-      <StatusBar style="light" translucent />
-    </ImageBackground>
+    </View>
   )
 }
