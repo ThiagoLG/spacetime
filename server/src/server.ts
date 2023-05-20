@@ -21,7 +21,8 @@ app.register(jwt, {
 app
   .listen({
     port: 3333,
-    host: "localhost",
+    // host: "localhost", // from web
+    host: "0.0.0.0", // from mobile
   })
   .then(() => {
     console.log("🚀 HTTP Server listening on port 3333 (http://localhost:3333");
