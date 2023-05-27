@@ -1,6 +1,6 @@
 export function Copyright() {
   return (
-    <div className="text-sm leading-relaxed text-gray-300">
+    <div className="text-sm leading-relaxed text-gray-300 mt-8">
       Made with 💜 on NLW{" "}
       <a
         href="https://rocketseat.com.br"
