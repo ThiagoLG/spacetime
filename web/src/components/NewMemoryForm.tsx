@@ -4,13 +4,17 @@ import { api } from '@/lib/api'
 import { Camera } from 'lucide-react'
 import { FormEvent } from 'react'
 import { MediaPicker } from './MediaPIcker'
+import Cookie from 'js-cookie'
+import { headers } from 'next/headers'
+import { useRouter } from 'next/navigation'
 
 export function NewMemoryForm() {
+  const router = useRouter()
+
   async function handleCreateMemory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     const formData = new FormData(event.currentTarget)
-    console.log(Array.from(formData.entries()))
 
     const fileToUpload = formData.get('coverUrl')
 
@@ -21,9 +25,26 @@ export function NewMemoryForm() {
 
       const uploadResponse = await api.post('/upload', uploadFormData)
       coverUrl = uploadResponse.data.fileUrl
-      
-      console.log(uploadResponse)
     }
+
+    const token = Cookie.get('token')
+
+    const insertedMememory = await api.post(
+      '/memories',
+      {
+        coverUrl,
+        content: formData.get('content'),
+        isPublic: formData.get('isPublic'),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
+
+    console.log('memória inserida: ', insertedMememory)
+    router.push('/')
   }
 
   return (
