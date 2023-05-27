@@ -25,7 +25,7 @@ export default function App() {
       clientId: '47f17d66e969949b2a7e',
       scopes: ['identity'],
       redirectUri: makeRedirectUri({
-        scheme: 'nlwspacetimenlwspacetime',
+        scheme: 'nlwspacetime',
       }),
     },
     discovery,
@@ -90,7 +90,7 @@ export default function App() {
       </View>
 
       <Text className="text-center font-body text-sm leading-relaxed text-gray-300">
-        Maked with 💜 on Rocketseat{"'"}s NLW
+        Made with 💜 on Rocketseat{"'"}s NLW
       </Text>
     </View>
   )
