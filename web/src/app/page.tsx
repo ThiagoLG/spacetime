@@ -28,6 +28,12 @@ export default async function Home() {
   })
 
   const memories: Memory[] = response.data
+  memories.forEach((memory) => {
+    memory.coverUrl = memory.coverUrl.replace(
+      /(([0-9]{1,3})\.){3}.([0-9]{1,3})/g,
+      process.env.NEXT_PUBLIC_CURRENT_IP_ADDRESS as string,
+    )
+  })
 
   if (!memories.length) return <EmptyMemories />
 

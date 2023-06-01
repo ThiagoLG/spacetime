@@ -11,6 +11,7 @@ import { cookies } from 'next/headers'
 import Image from 'next/image'
 import Link from 'next/link'
 import nlwSpacetimeLogoSvg from '../assets/nlw-spacetime-logo.svg'
+import { CalendarPlus } from 'lucide-react'
 
 const roboto = Roboto({ subsets: ['latin'], variable: '--font-roboto' })
 const baiJamjuree = BaiJamjuree({
@@ -53,14 +54,15 @@ export default function RootLayout({
                 <Image
                   src={nlwSpacetimeLogoSvg}
                   alt={'Application Logo'}
-                  className="lg:hidden"
+                  className={`scale-75 sm:scale-100 lg:hidden sm:block ${!isAuthenticated ? 'hidden' : ''}`}
                 />
               </Link>
               <Link
                 href="/memories/new"
-                className="inline-block rounded-full bg-green-500 px-5 py-3 font-alt text-sm uppercase leading-none text-black hover:bg-green-600 lg:hidden"
+                className="flex items-center justify-center gap-2 rounded-full bg-green-500 px-5 py-3 font-alt text-sm uppercase leading-none text-black hover:bg-green-600 lg:hidden"
               >
-                REGISTER MOMORY
+                <CalendarPlus size={20} />
+                <span className='hidden md:block'>REGISTER MOMORY</span>
               </Link>
             </div>
             <div className="h-5 lg:hidden"></div>
