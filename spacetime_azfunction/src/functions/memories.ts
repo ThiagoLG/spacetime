@@ -1,5 +1,5 @@
 import { app } from "@azure/functions"
-import { getAllMemories, getMemoryByID } from "../actions/memories_actions"
+import { getAllMemories, getMemoryByID, insertMemory } from "../actions/memories_actions"
 
 /** List all memories from logged user */
 app.http("memoriesAll", {
@@ -17,10 +17,10 @@ app.http("memoriesByID", {
   route: "memories/{id}"
 })
 
-/** List a specific memory */
-app.http("memoriesByID", {
-  methods: ["GET"],
+/** Create a new memory */
+app.http("insertMemory", {
+  methods: ["POST"],
   authLevel: "anonymous",
-  handler: getMemoryByID,
-  route: "memories/{id}"
+  handler: insertMemory,
+  route: "memories"
 })
