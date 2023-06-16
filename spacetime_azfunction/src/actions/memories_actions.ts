@@ -1,13 +1,17 @@
-import { HttpRequest, HttpResponseInit, InvocationContext} from "@azure/functions"
+import { HttpHandler, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions"
 import { z } from "zod"
+import { IUserToken } from "../interfaces/IUserToken";
 import { prisma } from '../lib/prisma'
 
-export async function getAllMemories(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-  context.log(`Http function processed request for url "${request.url}"`)
+export async function getAllMemories(
+  request: HttpRequest,
+  context: InvocationContext,
+  authenticatedUser: IUserToken
+): Promise<HttpResponseInit> {
 
   const allMemories = await prisma.memory.findMany({
     where: {
-      // userId: request.user?.sub,
+      userId: authenticatedUser.sub,
     },
     orderBy: {
       createdAt: "asc",
@@ -26,8 +30,11 @@ export async function getAllMemories(request: HttpRequest, context: InvocationCo
   }
 }
 
-export async function getMemoryByID(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-  context.log(`Http function processed request for url "${request.url}"`)
+export async function getMemoryByID(
+  request: HttpRequest,
+  context: InvocationContext,
+  authenticatedUser: IUserToken
+): Promise<HttpResponseInit> {
 
   const paramsSchema = z.object({
     id: z.string().uuid("the ID param must be passed as uuid format")
@@ -41,11 +48,21 @@ export async function getMemoryByID(request: HttpRequest, context: InvocationCon
     }
   })
 
-  return { jsonBody: memory }
+  if (!memory.isPublic && memory.userId !== authenticatedUser.sub) {
+    return {
+      body: `This memory is not public or does not belong to you.`,
+      status: 401
+    }
+  }
+
+  return { jsonBody: memory, status: 200 }
 }
 
-export async function insertMemory(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-  context.log(`Http function processed request for url "${request.url}"`)
+export async function insertMemory(
+  request: HttpRequest,
+  context: InvocationContext,
+  authenticatedUser: IUserToken
+): Promise<HttpResponseInit> {
 
   const bodySchema = z.object({
     content: z.string(),
@@ -60,11 +77,87 @@ export async function insertMemory(request: HttpRequest, context: InvocationCont
       content,
       coverUrl,
       isPublic,
-      userId: 'request.user.sub',
+      userId: authenticatedUser.sub,
     },
   });
 
   return {
-    jsonBody: memory
+    jsonBody: memory,
+    status: 200
   };
+}
+
+export async function updateMemory(
+  request: HttpRequest,
+  context: InvocationContext,
+  authenticatedUser: IUserToken
+): Promise<HttpResponseInit> {
+
+  const paramsSchema = z.object({
+    id: z.string().uuid(),
+  });
+
+  const { id } = paramsSchema.parse(request.params);
+
+  const bodySchema = z.object({
+    content: z.string(),
+    coverUrl: z.string(),
+    isPublic: z.coerce.boolean().default(false),
+  });
+
+  const { content, coverUrl, isPublic } = bodySchema.parse(request.body);
+
+  let memory = await prisma.memory.findUniqueOrThrow({
+    where: {
+      id,
+    },
+  });
+
+  if (memory.userId !== authenticatedUser.sub) {
+    return {
+      body: `This memory is not public or does not belong to you.`,
+      status: 401
+    }
+  }
+
+  memory = await prisma.memory.update({
+    where: {
+      id,
+    },
+    data: {
+      content,
+      coverUrl,
+      isPublic,
+    },
+  });
+
+  return {
+    jsonBody: memory,
+    status: 200
+  }
+
+}
+
+export async function deleteMemory(
+  request: HttpRequest,
+  context: InvocationContext,
+  authenticatedUser: IUserToken
+): Promise<HttpResponseInit> {
+
+  const paramsSchema = z.object({
+    id: z.string().uuid(),
+  });
+
+  const { id } = paramsSchema.parse(request.params);
+
+  const memory = await prisma.memory.delete({
+    where: {
+      id,
+    },
+  });
+
+  return {
+    jsonBody: memory,
+    status: 200
+  }
 }

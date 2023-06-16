@@ -1,19 +1,20 @@
 import { app } from "@azure/functions"
-import { getAllMemories, getMemoryByID, insertMemory } from "../actions/memories_actions"
+import { getAllMemories, getMemoryByID, insertMemory, updateMemory } from "../actions/memories_actions"
+import { authenticatedRoute } from "../middleware/AuthMiddleware"
 
 /** List all memories from logged user */
 app.http("memoriesAll", {
   methods: ["GET"],
   authLevel: "anonymous",
-  handler: getAllMemories,
+  handler: authenticatedRoute(getAllMemories),
   route: "memories",
 })
 
 /** List a specific memory */
-app.http("memoriesByID", {
+app.http("memoriesByID", { 
   methods: ["GET"],
   authLevel: "anonymous",
-  handler: getMemoryByID,
+  handler: authenticatedRoute(getMemoryByID),
   route: "memories/{id}"
 })
 
@@ -21,6 +22,22 @@ app.http("memoriesByID", {
 app.http("insertMemory", {
   methods: ["POST"],
   authLevel: "anonymous",
-  handler: insertMemory,
+  handler: authenticatedRoute(insertMemory),
   route: "memories"
+})
+
+/** Update a specific memory */
+app.http("updateMemory", {
+  methods: ["PUT"],
+  authLevel: "anonymous",
+  handler: authenticatedRoute(updateMemory),
+  route: "memories/{id}"
+})
+
+/** Delete a specific memory */
+app.http("deleteMemory", {
+  methods: ["DELETE"],
+  authLevel: "anonymous",
+  handler: authenticatedRoute(updateMemory),
+  route: "memories/{id}"
 })

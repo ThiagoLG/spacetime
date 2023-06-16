@@ -7,5 +7,3 @@ app.http('auth', {
     route: 'register',
     handler: registerAccess
 });
-
-

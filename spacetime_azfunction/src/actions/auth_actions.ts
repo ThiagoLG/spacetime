@@ -7,6 +7,8 @@ import * as jwt from 'jsonwebtoken'
 export async function registerAccess(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   context.log(`Http function processed request for url "${request.url}"`);
 
+  context.log(request.headers.get("Authorization"))
+
   const bodySchema = z.object({
     code: z.string(),
   })
@@ -35,7 +37,7 @@ export async function registerAccess(request: HttpRequest, context: InvocationCo
       Authorization: `Bearer ${access_token}`,
     },
   });
-
+  
   const userSchema = z.object({
     id: z.number(),
     login: z.string(),
