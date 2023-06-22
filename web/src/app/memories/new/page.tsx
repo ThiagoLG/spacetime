@@ -1,6 +1,5 @@
-import { MediaPicker } from "@/components/MediaPIcker";
 import { NewMemoryForm } from "@/components/NewMemoryForm";
-import { Camera, ChevronLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function NewMemory() {
