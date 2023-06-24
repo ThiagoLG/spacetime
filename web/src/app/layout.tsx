@@ -12,6 +12,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import nlwSpacetimeLogoSvg from '../assets/nlw-spacetime-logo.svg'
 import { CalendarPlus } from 'lucide-react'
+import Head from 'next/head'
 
 const roboto = Roboto({ subsets: ['latin'], variable: '--font-roboto' })
 const baiJamjuree = BaiJamjuree({
@@ -32,9 +33,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const isAuthenticated = cookies().has('token')
- 
+
   return (
     <html lang="en">
+      <Head>
+        <meta
+          http-equiv="Content-Security-Policy"
+          content="upgrade-insecure-requests"
+        />
+      </Head>
       <body
         className={`${roboto.variable} ${baiJamjuree.variable} bg-gray-900 font-sans text-gray-100`}
       >
@@ -54,7 +61,9 @@ export default function RootLayout({
                 <Image
                   src={nlwSpacetimeLogoSvg}
                   alt={'Application Logo'}
-                  className={`scale-75 sm:scale-100 lg:hidden sm:block ${!isAuthenticated ? 'hidden' : ''}`}
+                  className={`scale-75 sm:block sm:scale-100 lg:hidden ${
+                    !isAuthenticated ? 'hidden' : ''
+                  }`}
                 />
               </Link>
               <Link
@@ -62,7 +71,7 @@ export default function RootLayout({
                 className="flex items-center justify-center gap-2 rounded-full bg-green-500 px-5 py-3 font-alt text-sm uppercase leading-none text-black hover:bg-green-600 lg:hidden"
               >
                 <CalendarPlus size={20} />
-                <span className='hidden md:block'>REGISTER MOMORY</span>
+                <span className="hidden md:block">REGISTER MOMORY</span>
               </Link>
             </div>
             <div className="h-5 lg:hidden"></div>
