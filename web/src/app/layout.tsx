@@ -36,12 +36,12 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <Head>
+      {/* <Head>
         <meta
           http-equiv="Content-Security-Policy"
           content="upgrade-insecure-requests"
         />
-      </Head>
+      </Head> */}
       <body
         className={`${roboto.variable} ${baiJamjuree.variable} bg-gray-900 font-sans text-gray-100`}
       >
