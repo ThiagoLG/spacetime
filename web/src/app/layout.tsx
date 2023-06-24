@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const isAuthenticated = cookies().has('token')
-
+ 
   return (
     <html lang="en">
       <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
