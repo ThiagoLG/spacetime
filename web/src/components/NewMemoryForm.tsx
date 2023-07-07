@@ -2,53 +2,54 @@
 
 import { api } from '@/lib/api'
 import { Camera } from 'lucide-react'
-import { FormEvent } from 'react'
+import { FormEvent, useState } from 'react'
 import { MediaPicker } from './MediaPIcker'
 import Cookie from 'js-cookie'
-import { headers } from 'next/headers'
 import { useRouter } from 'next/navigation'
 
 export function NewMemoryForm() {
   const router = useRouter()
+  const [logs, setLogs] = useState<any>({})
 
   async function handleCreateMemory(event: FormEvent<HTMLFormElement>) {
-   try {
-    event.preventDefault()
+    try {
+      event.preventDefault()
 
-    const formData = new FormData(event.currentTarget)
+      const formData = new FormData(event.currentTarget)
 
-    const fileToUpload = formData.get('coverUrl')
+      const fileToUpload = formData.get('coverUrl')
 
-    let coverUrl = ''
-    if (fileToUpload) {
-      const uploadFormData = new FormData()
-      uploadFormData.set('file', fileToUpload)
+      let coverUrl = ''
+      if (fileToUpload) {
+        const uploadFormData = new FormData()
+        uploadFormData.set('file', fileToUpload)
 
-      const uploadResponse = await api.post('/upload', uploadFormData)
-      coverUrl = uploadResponse.data.fileUrl
-    }
+        const uploadResponse = await api.post('/upload', uploadFormData)
+        coverUrl = uploadResponse.data.fileUrl
+      }
 
-    const token = Cookie.get('token')
+      const token = Cookie.get('token')
 
-    const insertedMememory = await api.post(
-      '/memories',
-      {
-        coverUrl,
-        content: formData.get('content'),
-        isPublic: formData.get('isPublic'),
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const insertedMememory = await api.post(
+        '/memories',
+        {
+          coverUrl,
+          content: formData.get('content'),
+          isPublic: formData.get('isPublic'),
         },
-      },
-    )
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
 
-    console.log('memória inserida: ', insertedMememory)
-    router.push('/')
-   } catch (e) {
-    alert(e);
-   }
+      console.log('memória inserida: ', insertedMememory)
+      router.push('/')
+    } catch (e) {
+      alert(e)
+      setLogs(e);
+    }
   }
 
   return (
@@ -56,7 +57,7 @@ export function NewMemoryForm() {
       className="flex flex-1 flex-col gap-2 px-12 py-12 md:p-16"
       onSubmit={handleCreateMemory}
     >
-      <div className="flex flex-col items-start gap-4 sm:items-center mb-2 sm:flex-row">
+      <div className="mb-2 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
         <label
           htmlFor="media"
           className="flex cursor-pointer items-center gap-1.5 text-sm text-gray-200 hover:text-gray-100"
@@ -93,6 +94,7 @@ export function NewMemoryForm() {
       >
         REgistrer a Moment
       </button>
+      <pre>{logs}</pre>
     </form>
   )
 }
