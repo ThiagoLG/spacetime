@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 
 export function NewMemoryForm() {
   const router = useRouter()
-  const [logs, setLogs] = useState<any>({})
+  const [logs, setLogs] = useState<any>('')
 
   async function handleCreateMemory(event: FormEvent<HTMLFormElement>) {
     try {
@@ -48,7 +48,7 @@ export function NewMemoryForm() {
       router.push('/')
     } catch (e) {
       alert(e)
-      setLogs(e);
+      setLogs(JSON.stringify(e));
     }
   }
 
