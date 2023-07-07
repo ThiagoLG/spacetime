@@ -12,6 +12,7 @@ export function NewMemoryForm() {
   const router = useRouter()
 
   async function handleCreateMemory(event: FormEvent<HTMLFormElement>) {
+   try {
     event.preventDefault()
 
     const formData = new FormData(event.currentTarget)
@@ -45,6 +46,9 @@ export function NewMemoryForm() {
 
     console.log('memória inserida: ', insertedMememory)
     router.push('/')
+   } catch (e) {
+    alert(e);
+   }
   }
 
   return (
